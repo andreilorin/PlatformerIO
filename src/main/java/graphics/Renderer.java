@@ -1,0 +1,29 @@
+package graphics;
+
+public class Renderer {
+
+    private int width, height;
+    public int[] pixels;
+
+    public Renderer(int width, int height){
+        this.width = width;
+        this.height = height;
+        pixels = new int[width * height];
+    }
+
+    public void render(){
+        for(int y = 0; y < height; y++){
+            for(int x = 0; x < width; x++){
+                pixels[40 + 100 * width] = 0xff00ff;
+                pixels[80 + 100 * width] = 0x00ff00;
+                pixels[20 + 120 * width] = 0xff0000;
+            }
+        }
+    }
+
+    public void clear(){
+        for(int i = 0; i < pixels.length; i++){
+            pixels[i] = 0;
+        }
+    }
+}
