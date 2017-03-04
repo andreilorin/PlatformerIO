@@ -1,22 +1,42 @@
 package graphics;
 
+import java.util.Random;
+
 public class Renderer {
 
     private int width, height;
     public int[] pixels;
 
+    public final int MAP_SIZE = 64;
+    public final int MAP_SIZE_MASK = MAP_SIZE - 1;
+
+    public int[] tiles = new int[MAP_SIZE * MAP_SIZE];
+
+    private Random random = new Random();
+
     public Renderer(int width, int height){
         this.width = width;
         this.height = height;
-        pixels = new int[width * height];
+        pixels = new int[width * height]; // 0 - 50.399
+
+        for(int i = 0; i < MAP_SIZE * MAP_SIZE; i++){
+            tiles[i] = random.nextInt(0xffffff);
+        }
     }
 
-    public void render(){
+    public void render(int xOffset, int yOffset){
         for(int y = 0; y < height; y++){
+
+            int yy = y + yOffset;
+            //if(yy < 0 || yy >= height) break;
+
             for(int x = 0; x < width; x++){
-                pixels[40 + 100 * width] = 0xff00ff;
-                pixels[80 + 100 * width] = 0x00ff00;
-                pixels[20 + 120 * width] = 0xff0000;
+
+                int xx = x + xOffset;
+
+                //if(xx < 0 || xx >= width) break;
+                int tileIndex = ((xx >> 4) & MAP_SIZE_MASK) + ((yy >> 4) & MAP_SIZE_MASK) * MAP_SIZE; // bitwise operator (x / 16). makes it run faster
+                pixels[x + y * width] = tiles[tileIndex];
             }
         }
     }

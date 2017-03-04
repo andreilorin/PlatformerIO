@@ -8,6 +8,7 @@ import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
 import graphics.Renderer;
+import input.Keyboard;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -36,6 +37,8 @@ public class Game extends Canvas implements Runnable{
 
     private JFrame frame;
 
+    private Keyboard key;
+
     //Constructor
     public Game(){
 
@@ -46,26 +49,35 @@ public class Game extends Canvas implements Runnable{
 
         frame = new JFrame();
 
+        key = new Keyboard();
+        addKeyListener(key);
+
     }
 
     //Methods
     public synchronized void start(){
+        logger.info("Starting the game");
         running = true;
         thread = new Thread(this, "Game Thread");
         thread.start();
     }
 
     public synchronized void stop(){
+        logger.info("Game stopped");
+
         running = false;
         try{
             thread.join();
         }catch (InterruptedException e) {
             e.printStackTrace();
         }
+
+
     }
 
 
     public void run() {
+        logger.info("Game is running");
         long lastTime = System.nanoTime();
         long timer = System.currentTimeMillis();
         final double ns = 1000000000.0 / 60.0;
@@ -91,7 +103,6 @@ public class Game extends Canvas implements Runnable{
 
             if(System.currentTimeMillis() - timer > 1000){
                 timer += 1000;
-                System.out.println(updates + " UPS, " + frames + " fps");
                 frame.setTitle(title + "    " + updates + " UPS, " + frames + " fps");
                 updates = 0;
                 frames = 0;
@@ -100,9 +111,15 @@ public class Game extends Canvas implements Runnable{
         stop();
     }
 
+    int x = 0, y = 0;
 
     public void update(){
-
+        key.update();
+        if (key.up) y--;
+        if (key.down) y++;
+        if (key.left) x--;
+        if (key.right) x++;
+        if (key.quit) stop();
     }
 
     public void render(){
@@ -114,7 +131,7 @@ public class Game extends Canvas implements Runnable{
 
         screen.clear();
 
-        screen.render();
+        screen.render(x, y);
 
         for (int i = 0; i < pixels.length; i++) {
             pixels[i] = screen.pixels[i];
@@ -133,8 +150,6 @@ public class Game extends Canvas implements Runnable{
 
     }
 
-
-
     public static void main(String[] args){
         Game game = new Game();
 
@@ -145,7 +160,9 @@ public class Game extends Canvas implements Runnable{
         game.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         game.frame.setLocationRelativeTo(null);
         game.frame.setVisible(true);
+        game.requestFocusInWindow();
         game.start();
+
     }
 
 }
