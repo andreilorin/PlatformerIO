@@ -1,9 +1,11 @@
 package graphics;
 
-/**
- * Created by Lorin on 2017-03-06.
- */
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 public class Sprite {
+
+    private final static Logger logger = LogManager.getLogger(Sprite.class);
 
     public final int SIZE;
     private int x, y;
@@ -22,6 +24,7 @@ public class Sprite {
     }
 
     private void loadSprite(){
+        logger.info("Loading Sprite");
         for(int y = 0; y < SIZE; y++){
             for(int x = 0; x < SIZE; x++){
                 pixels[x + y * SIZE] = sheet.pixels[(x + this.x) + (y + this.y) * sheet.SIZE];
