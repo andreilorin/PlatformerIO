@@ -10,6 +10,6 @@ public class VoidTile extends Tile {
     }
 
     public void render(int x, int y, Renderer renderer){
-        renderer.renderTile(x, y, this);
+        renderer.renderTile(x << 4, y << 4, this);
     }
 }

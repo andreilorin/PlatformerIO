@@ -14,8 +14,8 @@ public class GrassTile extends Tile{
     }
 
     public void render(int x, int y, Renderer renderer){
-        logger.info("Generating grass tile");
-        renderer.renderTile(x, y, this);
+        //logger.info("Generating grass tile");
+        renderer.renderTile(x << 4, y << 4, this);
     }
 
 

@@ -1,7 +1,5 @@
 package game;
 
-
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferStrategy;
@@ -9,6 +7,8 @@ import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
 import graphics.Renderer;
 import input.Keyboard;
+import level.Level;
+import level.RandomLevel;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -17,11 +17,9 @@ public class Game extends Canvas implements Runnable{
 
     private static final Logger logger = LogManager.getLogger(Game.class);
 
-
     public static int width = 300;
     public static int height = 300 / 16 * 9;
     public static int scale = 3;
-
     private static String title = "PlatformerIO";
 
     private Thread thread;
@@ -39,7 +37,8 @@ public class Game extends Canvas implements Runnable{
 
     private Keyboard key;
 
-    //Constructor
+    private Level level;
+
     public Game(){
 
         Dimension size = new Dimension(width*scale, height*scale);
@@ -50,6 +49,8 @@ public class Game extends Canvas implements Runnable{
         frame = new JFrame();
 
         key = new Keyboard();
+
+        level = new RandomLevel(65, 64);
         addKeyListener(key);
 
     }
@@ -71,8 +72,6 @@ public class Game extends Canvas implements Runnable{
         }catch (InterruptedException e) {
             e.printStackTrace();
         }
-
-
     }
 
 
@@ -131,7 +130,8 @@ public class Game extends Canvas implements Runnable{
 
         screen.clear();
 
-        screen.render(x, y);
+        level.render(x, y, screen);
+
 
         for (int i = 0; i < pixels.length; i++) {
             pixels[i] = screen.pixels[i];
@@ -160,7 +160,7 @@ public class Game extends Canvas implements Runnable{
         game.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         game.frame.setLocationRelativeTo(null);
         game.frame.setVisible(true);
-        game.requestFocusInWindow();
+        game.frame.requestFocus();
         game.start();
 
     }
